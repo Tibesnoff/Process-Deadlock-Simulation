@@ -20,12 +20,27 @@
 
 int main(int argc, char* argv) {
 
+    fake_resources = malloc(3 * sizeof(int));
+
+    int max[5][3]={ {3, 1, 4} ,{2, 4, 1},{3, 5, 4},{2, 2, 2},{5, 4, 3} };
+
+    int alloc[5][3]={ {1,0,1},{2,2,0},{3,3,2},{0,0,1},{5,0,3} };
+
+    int avail[3] = { 2,1,0 };
+
+    int* output = BankersAlgorithm(5, 3, max, alloc, avail);
+
+    printf(" % d % d ", output[0], output[1]);
+
     return 1;
 }
 
-int BankersAlgorithm(int n, int m, int* max, int* alloc, struct fake_resources *avail) {
+int* BankersAlgorithm(int n, int m, int max[5][3], int alloc[5][3], int avail[3]) {
 
     int i, j, k;
+
+    int *finalOutput=NULL;
+    finalOutput = malloc(2 * sizeof(int));
 
     int f[n], ans[n], ind = 0;
     for (k = 0; k < n; k++) {
@@ -66,13 +81,17 @@ int BankersAlgorithm(int n, int m, int* max, int* alloc, struct fake_resources *
         if (f[i] == 0)
         {
             flag = 0;
-            return [i, flag]
+            finalOutput[0] = i;
+            finalOutput[1] = flag;
         }
     }
 
-    if (flag == 1)return [-1, flag];
+    if (flag == 1) {
+        finalOutput[0] = -1;
+        finalOutput[1] = flag;
+    }
 
-    return [-1, -1];
+    return finalOutput;
 }
 
 // Create Allocation Matrix, will be provided
