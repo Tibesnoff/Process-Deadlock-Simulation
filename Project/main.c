@@ -9,14 +9,11 @@ int main(int argc, char** argv) {
         return -1;
     }
     int arg = atoi(argv[1]);
-    
-    
-    fake_resources = malloc(3 * sizeof(int));
 
     if (arg == 0) {
 
         //This will deadlock
-        int max[5][3] = { {3, 1, 4} ,{2, 4, 1},{3, 5, 4},{2, 2, 2},{5, 4, 3} };
+        int max[5][3] = {{3, 1, 4} ,{2, 4, 1},{3, 5, 4},{2, 2, 2},{5, 4, 3}};
 
         int alloc[5][3] = { {1,0,1},{2,2,0},{3,3,2},{0,0,1},{5,0,3} };
 
