@@ -16,9 +16,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "../oslabs.h"
+//#include "../oslabs.h"
 
-int* BankersAlgorithm(int n, int m, int max[5][3], int alloc[5][3], int avail[3]) {
+int* BankersAlgorithm(int n, int m, process max, process alloc, fake_resources avail) {
 
     int i, j, k;
 
@@ -32,7 +32,7 @@ int* BankersAlgorithm(int n, int m, int max[5][3], int alloc[5][3], int avail[3]
     int need[n][m];
     for (i = 0; i < n; i++) {
         for (j = 0; j < m; j++)
-            need[i][j] = max[i][j] - alloc[i][j];
+            need[i][j] = returnValue(j,max.resources[i]) - returnValue(j, alloc.resources[i]);
     }
     int y = 0;
     for (k = 0; k < 5; k++) {
@@ -41,7 +41,7 @@ int* BankersAlgorithm(int n, int m, int max[5][3], int alloc[5][3], int avail[3]
 
                 int flag = 0;
                 for (j = 0; j < m; j++) {
-                    if (need[i][j] > avail[j]) {
+                    if (need[i][j] > returnValue(j,avail)) {
                         flag = 1;
                         break;
                     }
@@ -50,7 +50,7 @@ int* BankersAlgorithm(int n, int m, int max[5][3], int alloc[5][3], int avail[3]
                 if (flag == 0) {
                     ans[ind++] = i;
                     for (y = 0; y < m; y++)
-                        avail[y] += alloc[i][y];
+                        modifyProcess(y, &avail, returnValue(y, alloc.resources[i]));
                     f[i] = 1;
                 }
             }
@@ -64,7 +64,7 @@ int* BankersAlgorithm(int n, int m, int max[5][3], int alloc[5][3], int avail[3]
         if (f[i] == 0)
         {
             flag = 0;
-            finalOutput[0] = i;
+            finalOutput[0] = i; //This will show processes starting with 0 as the first process
             finalOutput[1] = flag;
         }
     }
@@ -75,6 +75,18 @@ int* BankersAlgorithm(int n, int m, int max[5][3], int alloc[5][3], int avail[3]
     }
 
     return finalOutput;
+}
+
+int returnValue(int resource, fake_resources p) {
+    if (resource == 0)return p.RAM;
+    if (resource == 1)return p.NET;
+    return p.DISK;
+}
+
+void* modifyProcess(int resource, fake_resources* p, int val) {
+    if (resource == 0)(*p).RAM += val;
+    if (resource == 1)(*p).NET += val;
+    (*p).DISK += val;
 }
 
 // Create Allocation Matrix, will be provided
