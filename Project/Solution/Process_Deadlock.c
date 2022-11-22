@@ -16,9 +16,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-//#include "../oslabs.h"
 
-int* BankersAlgorithm(int n, int m, process max, process alloc, fake_resources avail) {
+int* BankersAlgorithm(int n, int m, processes max, processes alloc, fake_resources avail) {
 
     int i, j, k;
 
@@ -32,7 +31,7 @@ int* BankersAlgorithm(int n, int m, process max, process alloc, fake_resources a
     int need[n][m];
     for (i = 0; i < n; i++) {
         for (j = 0; j < m; j++)
-            need[i][j] = returnValue(j,max.resources[i]) - returnValue(j, alloc.resources[i]);
+            need[i][j] = returnResourceValue(j,max.resources[i]) - returnResourceValue(j, alloc.resources[i]);
     }
     int y = 0;
     for (k = 0; k < 5; k++) {
@@ -41,7 +40,7 @@ int* BankersAlgorithm(int n, int m, process max, process alloc, fake_resources a
 
                 int flag = 0;
                 for (j = 0; j < m; j++) {
-                    if (need[i][j] > returnValue(j,avail)) {
+                    if (need[i][j] > returnResourceValue(j,avail)) {
                         flag = 1;
                         break;
                     }
@@ -50,7 +49,7 @@ int* BankersAlgorithm(int n, int m, process max, process alloc, fake_resources a
                 if (flag == 0) {
                     ans[ind++] = i;
                     for (y = 0; y < m; y++)
-                        modifyProcess(y, &avail, returnValue(y, alloc.resources[i]));
+                        modifyResources(y, &avail, returnResourceValue(y, alloc.resources[i]));
                     f[i] = 1;
                 }
             }
@@ -77,13 +76,13 @@ int* BankersAlgorithm(int n, int m, process max, process alloc, fake_resources a
     return finalOutput;
 }
 
-int returnValue(int resource, fake_resources p) {
+int returnResourceValue(int resource, fake_resources p) {
     if (resource == 0)return p.RAM;
     if (resource == 1)return p.NET;
     return p.DISK;
 }
 
-void* modifyProcess(int resource, fake_resources* p, int val) {
+void* modifyResources(int resource, fake_resources* p, int val) {
     if (resource == 0)(*p).RAM += val;
     if (resource == 1)(*p).NET += val;
     (*p).DISK += val;
