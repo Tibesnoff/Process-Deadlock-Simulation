@@ -17,29 +17,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int* BankersAlgorithm(int n, int m, processes max, processes alloc, fake_resources avail) {
+int* CheckForDeadlock(int numberOfProcesses, int numberOfResources, processes max, processes alloc, fake_resources avail) {
 
     int i, j, k;
 
     int *finalOutput=NULL;
     finalOutput = malloc(2 * sizeof(int));
 
-    int f[n], ans[n], ind = 0;
-    for (k = 0; k < n; k++) {
+    int f[numberOfProcesses], ans[numberOfProcesses], ind = 0;
+    for (k = 0; k < numberOfProcesses; k++) {
         f[k] = 0;
     }
-    int need[n][m];
-    for (i = 0; i < n; i++) {
-        for (j = 0; j < m; j++)
+    int need[numberOfProcesses][numberOfResources];
+    for (i = 0; i < numberOfProcesses; i++) {
+        for (j = 0; j < numberOfResources; j++)
             need[i][j] = returnResourceValue(j,max.resources[i]) - returnResourceValue(j, alloc.resources[i]);
     }
     int y = 0;
     for (k = 0; k < 5; k++) {
-        for (i = 0; i < n; i++) {
+        for (i = 0; i < numberOfProcesses; i++) {
             if (f[i] == 0) {
 
                 int flag = 0;
-                for (j = 0; j < m; j++) {
+                for (j = 0; j < numberOfResources; j++) {
                     if (need[i][j] > returnResourceValue(j,avail)) {
                         flag = 1;
                         break;
@@ -48,7 +48,7 @@ int* BankersAlgorithm(int n, int m, processes max, processes alloc, fake_resourc
 
                 if (flag == 0) {
                     ans[ind++] = i;
-                    for (y = 0; y < m; y++)
+                    for (y = 0; y < numberOfResources; y++)
                         modifyResources(y, &avail, returnResourceValue(y, alloc.resources[i]));
                     f[i] = 1;
                 }
@@ -58,7 +58,7 @@ int* BankersAlgorithm(int n, int m, processes max, processes alloc, fake_resourc
 
     int flag = 1;
 
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < numberOfProcesses; i++)
     {
         if (f[i] == 0)
         {
