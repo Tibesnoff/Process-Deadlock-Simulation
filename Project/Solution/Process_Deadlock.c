@@ -4,29 +4,31 @@
 *	Lucas Lecler
 *	2022
 *
-* 
-*
-*
 *
 */
-
-//Bankers Algorithm  
-// Needs: Stuct of Available Resources, Allocation Matrix, Number of process, Number of resources, Max matrix, 
-// Will return a struct with a resource that causes fault if flag is 0 and an int flag either 1 for passing and 0 for not passing
 
 #include <stdio.h>
 #include <stdlib.h>
 
-int* CheckForDeadlock(int numberOfProcesses, int numberOfResources, processes max, processes alloc, fake_resources avail) {
+/*
+* Check for deadlock
+*   This function is to check if a given scenario runs into deadlock
+*   Function will return a int* of two ints where the first int is the process that causes deadlock and the second int is the flag
+*       *Process causing deadlock will start at 0 for the first process
+*       *Process causing deadlock will show as -1 if the flag is showing no deadlock
+*       *Flag will be set to 0 for deadlock and 1 for no deadlock
+* 
+*/
+int* CheckForDeadlock(int numberOfProcesses, processes max, processes alloc, fake_resources avail) {
 
     int i, j, k;
 
     int *finalOutput=NULL;
     finalOutput = malloc(2 * sizeof(int));
 
-    int f[numberOfProcesses], ans[numberOfProcesses], ind = 0;
+    int flagArr[numberOfProcesses], ans[numberOfProcesses], ind = 0;
     for (k = 0; k < numberOfProcesses; k++) {
-        f[k] = 0;
+        flagArr[k] = 0;
     }
     int need[numberOfProcesses][numberOfResources];
     for (i = 0; i < numberOfProcesses; i++) {
@@ -36,7 +38,7 @@ int* CheckForDeadlock(int numberOfProcesses, int numberOfResources, processes ma
     int y = 0;
     for (k = 0; k < 5; k++) {
         for (i = 0; i < numberOfProcesses; i++) {
-            if (f[i] == 0) {
+            if (flagArr[i] == 0) {
 
                 int flag = 0;
                 for (j = 0; j < numberOfResources; j++) {
@@ -50,7 +52,7 @@ int* CheckForDeadlock(int numberOfProcesses, int numberOfResources, processes ma
                     ans[ind++] = i;
                     for (y = 0; y < numberOfResources; y++)
                         modifyResources(y, &avail, returnResourceValue(y, alloc.resources[i]));
-                    f[i] = 1;
+                    flagArr[i] = 1;
                 }
             }
         }
@@ -60,10 +62,10 @@ int* CheckForDeadlock(int numberOfProcesses, int numberOfResources, processes ma
 
     for (int i = 0; i < numberOfProcesses; i++)
     {
-        if (f[i] == 0)
+        if (flagArr[i] == 0)
         {
             flag = 0;
-            finalOutput[0] = i; //This will show processes starting with 0 as the first process
+            finalOutput[0] = i;
             finalOutput[1] = flag;
         }
     }
@@ -87,10 +89,6 @@ void* modifyResources(int resource, fake_resources* p, int val) {
     if (resource == 1)(*p).NET += val;
     (*p).DISK += val;
 }
-
-// Create Allocation Matrix, will be provided
-
-// Create Max Matrix, will be provided
 
 
 
