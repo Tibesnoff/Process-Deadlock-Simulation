@@ -21,7 +21,6 @@
 
 int correctlyFoundDeadlock (int* expectedOutput, int* receivedOutput) {
     int error = 0; //0 for passing 
-    printf("%d %d %d %d", expectedOutput[0], receivedOutput[0], expectedOutput[1], receivedOutput[1]);
     if (expectedOutput[1] != receivedOutput[1])error = 1;
     if (error && expectedOutput[1] == 0)printf("Deadlock detection function gave: %d which means no deadlock was found\nCorrect output should be %d which means deadlock was found\n", receivedOutput[1], expectedOutput[1]);
     if (error && expectedOutput[1] == 1)printf("Deadlock detection function gave: %d which means deadlock was found\nCorrect output should be %d which means deadlock was not found\n", receivedOutput[1], expectedOutput[1]);
@@ -77,7 +76,7 @@ int main(int argc, char** argv) {
 
         expectedOutput[0] = 3;
         expectedOutput[1] = 0;
-        printf("Error Code: %d", correctlyFoundDeadlock(expectedOutput, CheckForDeadlock(5, max, alloc, avail)));
+        printf("Error Code: %d", correctlyFoundDeadlock(expectedOutput, CheckForDeadlock(4, max, alloc, avail)));
 
         /*int* output = CheckForDeadlock(4, max, alloc, avail);
 
@@ -92,7 +91,7 @@ int main(int argc, char** argv) {
 
         expectedOutput[0] = -1;
         expectedOutput[1] = 1;
-        printf("Error Code: %d", correctlyFoundDeadlock(expectedOutput, CheckForDeadlock(5, max, alloc, avail)));
+        printf("Error Code: %d", correctlyFoundDeadlock(expectedOutput, CheckForDeadlock(3, max, alloc, avail)));
 
         /*int* output = CheckForDeadlock(3, max, alloc, avail);
 
