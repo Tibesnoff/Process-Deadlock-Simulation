@@ -6,12 +6,13 @@
 *
 *Completed
 *   Check for deadlock
+*   Process the test cases
 *
 *Still needed
 *   Function to process given scenario
 *   Satisfy lowest needed resources with ending smallest resource process that can give resources to the first process
 *   Satisfy lowest needed resources with ending highest resource process that can give resources to the first process
-*   Process the test cases
+*   
 */
 
 #include <stdio.h>
@@ -21,11 +22,15 @@
 
 int correctlyFoundDeadlock (int* expectedOutput, int* receivedOutput) {
     int error = 0; //0 for passing 
+
     if (expectedOutput[1] != receivedOutput[1])error = 1;
     if (error && expectedOutput[1] == 0)printf("Deadlock detection function gave: %d which means no deadlock was found\nCorrect output should be %d which means deadlock was found\n", receivedOutput[1], expectedOutput[1]);
-    if (error && expectedOutput[1] == 1)printf("Deadlock detection function gave: %d which means deadlock was found\nCorrect output should be %d which means deadlock was not found\n", receivedOutput[1], expectedOutput[1]);
+    else if (error && expectedOutput[1] == 1)printf("Deadlock detection function gave: %d which means deadlock was found\nCorrect output should be %d which means deadlock was not found\n", receivedOutput[1], expectedOutput[1]);
+    else printf("Deadlock detection function correctly figured out if deadlock occured\n");
+    
     if (expectedOutput[0] != receivedOutput[0])error = 2;
-    if (error && expectedOutput[0] > -1)printf("Deadlock detection function claims deadlock occured with process: %d\nScenario deadlocks from process: %d\n", receivedOutput[0], expectedOutput[0]);
+    if (error > 1 && expectedOutput[0] > -1)printf("Deadlock detection function claims deadlock occured with process: %d\nScenario deadlocks from process: %d\n", receivedOutput[0], expectedOutput[0]);
+    else printf("Deadlock detection function correctly found what process causes deadlock\n");
 
     return error;
 }
@@ -49,6 +54,7 @@ int main(int argc, char** argv) {
         expectedOutput[0] = 4;
         expectedOutput[1] = 0;
         printf("Error Code: %d",correctlyFoundDeadlock(expectedOutput, CheckForDeadlock(5, max, alloc, avail)));
+
         /*int* output = CheckForDeadlock(5, max, alloc, avail);
 
         printf(" Process Causing Deadlock: %d Deadlock?: %d ", output[0], output[1]);*/
@@ -63,6 +69,7 @@ int main(int argc, char** argv) {
         expectedOutput[0] = -1;
         expectedOutput[1] = 1;
         printf("Error Code: %d", correctlyFoundDeadlock(expectedOutput, CheckForDeadlock(5, max, alloc, avail)));
+
        /* int* output = CheckForDeadlock(5, max, alloc, avail);
 
         printf(" Process Causing Deadlock: %d Deadlock?: %d ", output[0], output[1]);*/
