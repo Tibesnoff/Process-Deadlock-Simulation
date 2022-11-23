@@ -1,1 +1,26 @@
-int* BankersAlgorithm(int n, int m, int max[5][3], int alloc[5][3], int avail[3]);
+/*
+* Created By
+*	Tyler Besnoff
+*	Lucas Lecler
+*	2022
+*
+*/
+
+#define numberOfResources 3
+
+typedef struct {
+	int RAM;
+	int NET;
+	int DISK;
+}fake_resources;
+
+typedef struct {
+	fake_resources *resources;
+}processes;
+
+void* modifyResources(int resource, fake_resources* p, int val);
+int returnResourceValue(int resource, fake_resources p);
+int* CheckForDeadlock(int numberOfProcesses, processes max, processes alloc, fake_resources avail);
+
+
+

@@ -4,44 +4,45 @@
 *	Lucas Lecler
 *	2022
 *
-* 
-*
-*
 *
 */
 
-//Bankers Algorithm  
-// Needs: Stuct of Available Resources, Allocation Matrix, Number of process, Number of resources, Max matrix, 
-// Will return a struct with a resource that causes fault if flag is 0 and an int flag either 1 for passing and 0 for not passing
-
 #include <stdio.h>
 #include <stdlib.h>
-#include "../oslabs.h"
 
-int* BankersAlgorithm(int n, int m, int max[5][3], int alloc[5][3], int avail[3]) {
+/*
+* Check for deadlock
+*   This function is to check if a given scenario runs into deadlock
+*   Function will return a int* of two ints where the first int is the process that causes deadlock and the second int is the flag
+*       *Process causing deadlock will start at 0 for the first process
+*       *Process causing deadlock will show as -1 if the flag is showing no deadlock
+*       *Flag will be set to 0 for deadlock and 1 for no deadlock
+* 
+*/
+int* CheckForDeadlock(int numberOfProcesses, processes max, processes alloc, fake_resources avail) {
 
     int i, j, k;
 
     int *finalOutput=NULL;
     finalOutput = malloc(2 * sizeof(int));
 
-    int f[n], ans[n], ind = 0;
-    for (k = 0; k < n; k++) {
-        f[k] = 0;
+    int flagArr[numberOfProcesses], ans[numberOfProcesses], ind = 0;
+    for (k = 0; k < numberOfProcesses; k++) {
+        flagArr[k] = 0;
     }
-    int need[n][m];
-    for (i = 0; i < n; i++) {
-        for (j = 0; j < m; j++)
-            need[i][j] = max[i][j] - alloc[i][j];
+    int need[numberOfProcesses][numberOfResources];
+    for (i = 0; i < numberOfProcesses; i++) {
+        for (j = 0; j < numberOfResources; j++)
+            need[i][j] = returnResourceValue(j,max.resources[i]) - returnResourceValue(j, alloc.resources[i]);
     }
     int y = 0;
     for (k = 0; k < 5; k++) {
-        for (i = 0; i < n; i++) {
-            if (f[i] == 0) {
+        for (i = 0; i < numberOfProcesses; i++) {
+            if (flagArr[i] == 0) {
 
                 int flag = 0;
-                for (j = 0; j < m; j++) {
-                    if (need[i][j] > avail[j]) {
+                for (j = 0; j < numberOfResources; j++) {
+                    if (need[i][j] > returnResourceValue(j,avail)) {
                         flag = 1;
                         break;
                     }
@@ -49,9 +50,9 @@ int* BankersAlgorithm(int n, int m, int max[5][3], int alloc[5][3], int avail[3]
 
                 if (flag == 0) {
                     ans[ind++] = i;
-                    for (y = 0; y < m; y++)
-                        avail[y] += alloc[i][y];
-                    f[i] = 1;
+                    for (y = 0; y < numberOfResources; y++)
+                        modifyResources(y, &avail, returnResourceValue(y, alloc.resources[i]));
+                    flagArr[i] = 1;
                 }
             }
         }
@@ -59,9 +60,9 @@ int* BankersAlgorithm(int n, int m, int max[5][3], int alloc[5][3], int avail[3]
 
     int flag = 1;
 
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < numberOfProcesses; i++)
     {
-        if (f[i] == 0)
+        if (flagArr[i] == 0)
         {
             flag = 0;
             finalOutput[0] = i;
@@ -77,9 +78,17 @@ int* BankersAlgorithm(int n, int m, int max[5][3], int alloc[5][3], int avail[3]
     return finalOutput;
 }
 
-// Create Allocation Matrix, will be provided
+int returnResourceValue(int resource, fake_resources p) {
+    if (resource == 0)return p.RAM;
+    if (resource == 1)return p.NET;
+    return p.DISK;
+}
 
-// Create Max Matrix, will be provided
+void* modifyResources(int resource, fake_resources* p, int val) {
+    if (resource == 0)(*p).RAM += val;
+    if (resource == 1)(*p).NET += val;
+    (*p).DISK += val;
+}
 
 
 
