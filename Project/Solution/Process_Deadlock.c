@@ -11,6 +11,21 @@
 #include <stdlib.h>
 
 /*
+* Remove Smallest Allocated
+*   This function copies. finds, and removes the process with the smallest allocation of resources that can satisfy the process that deadlocks
+*   Returns which process to remove
+*/
+int RemoveSmallestAllocated(int numberOfProcesses,int deadlockedProcess, processes max, processes alloc, fake_resources avail) {
+    processes maxcp = max;
+    processes alloccp = alloc;
+    fake_resources availcp = avail;
+    fake_resources need = { (max.resources[deadlockedProcess].RAM - alloc.resources[deadlockedProcess].RAM), (max.resources[deadlockedProcess].NET - alloc.resources[deadlockedProcess].NET), (max.resources[deadlockedProcess].DISK - alloc.resources[deadlockedProcess].DISK)};
+    printf("remove\nNeed %d %d %d\n", need.RAM, need.NET, need.DISK);
+
+}
+
+
+/*
 * Check for deadlock
 *   This function is to check if a given scenario runs into deadlock
 *   Function will return a int* of two ints where the first int is the process that causes deadlock and the second int is the flag
@@ -74,6 +89,8 @@ int* CheckForDeadlock(int numberOfProcesses, processes max, processes alloc, fak
         finalOutput[0] = -1;
         finalOutput[1] = flag;
     }
+
+    RemoveSmallestAllocated(numberOfProcesses, finalOutput[0], max, alloc, avail);
 
     return finalOutput;
 }
