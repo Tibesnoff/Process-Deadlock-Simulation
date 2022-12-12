@@ -21,7 +21,6 @@ typedef struct {
 void* modifyResources(int resource, fake_resources* p, int val);
 int returnResourceValue(int resource, fake_resources p);
 int* CheckForDeadlock(int numberOfProcesses, processes max, processes alloc, fake_resources avail);
-int RemoveSmallestAllocated(int numberOfProcesses, int deadlockedProcess, processes max, processes alloc, fake_resources avail);
-
+int RemoveSmallestAllocated(int numberOfProcesses, int deadlockedProcess, processes* max, processes* alloc, fake_resources* avail);
 
 

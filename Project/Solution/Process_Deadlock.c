@@ -12,16 +12,41 @@
 
 /*
 * Remove Smallest Allocated
-*   This function copies. finds, and removes the process with the smallest allocation of resources that can satisfy the process that deadlocks
-*   Returns which process to remove
+*   This function finds, and removes the process with the smallest allocation total of resources based off its max resources needed that can satisfy the process that deadlocks
+*   Returns which process was removed
 */
-int RemoveSmallestAllocated(int numberOfProcesses,int deadlockedProcess, processes max, processes alloc, fake_resources avail) {
-    processes maxcp = max;
-    processes alloccp = alloc;
-    fake_resources availcp = avail;
-    fake_resources need = { (max.resources[deadlockedProcess].RAM - alloc.resources[deadlockedProcess].RAM), (max.resources[deadlockedProcess].NET - alloc.resources[deadlockedProcess].NET), (max.resources[deadlockedProcess].DISK - alloc.resources[deadlockedProcess].DISK)};
-    printf("remove\nNeed %d %d %d\n", need.RAM, need.NET, need.DISK);
+int RemoveSmallestAllocated(int numberOfProcesses, int deadlockedProcess, processes* max, processes* alloc, fake_resources* avail) {
 
+    fake_resources need = { ((*max).resources[deadlockedProcess].RAM - (*alloc).resources[deadlockedProcess].RAM), ((*max).resources[deadlockedProcess].NET - (*alloc).resources[deadlockedProcess].NET), ((*max).resources[deadlockedProcess].DISK - (*alloc).resources[deadlockedProcess].DISK)};
+    int pToRemove;
+    int smallestResourceTotal = 10000;
+    for (int i = 0; i < numberOfProcesses; i++) {
+        if (i == deadlockedProcess)continue;
+        if (((*alloc).resources[i].RAM + (*avail).RAM >= need.RAM) && ((*alloc).resources[i].NET + (*avail).NET >= need.NET) && ((*alloc).resources[i].DISK + (*avail).DISK >= need.DISK)) {
+            int resourceTotal = (*max).resources[i].RAM + (*max).resources[i].NET + (*max).resources[i].DISK;
+            if (resourceTotal < smallestResourceTotal) {
+                smallestResourceTotal = resourceTotal;
+                pToRemove = i;
+            }
+        }
+    }
+
+    int j = 0;
+
+    for (int i = 0; i < numberOfProcesses; i++) {
+        if (i == pToRemove) {
+            (*avail).RAM+= (*alloc).resources[i].RAM;
+            (*avail).NET+= (*alloc).resources[i].NET;
+            (*avail).DISK+= (*alloc).resources[i].DISK;
+            continue;
+        }
+        (*max).resources[j] = (*max).resources[i];
+        (*alloc).resources[j++] = (*alloc).resources[i];
+    }
+
+    numberOfProcesses--;
+    
+    return pToRemove;
 }
 
 
@@ -32,13 +57,19 @@ int RemoveSmallestAllocated(int numberOfProcesses,int deadlockedProcess, process
 *       *Process causing deadlock will start at 0 for the first process
 *       *Process causing deadlock will show as -1 if the flag is showing no deadlock
 *       *Flag will be set to 0 for deadlock and 1 for no deadlock
+*       *Make sure avail array is copied and use the copy in this algorithm
 * 
 */
 int* CheckForDeadlock(int numberOfProcesses, processes max, processes alloc, fake_resources avail) {
 
+    fake_resources availcp;
+    availcp.RAM = avail.RAM;
+    availcp.DISK = avail.DISK;
+    availcp.NET = avail.NET;
+
     int i, j, k;
 
-    int *finalOutput=NULL;
+    int* finalOutput = NULL;
     finalOutput = malloc(2 * sizeof(int));
 
     int flagArr[numberOfProcesses], ans[numberOfProcesses], ind = 0;
@@ -48,7 +79,7 @@ int* CheckForDeadlock(int numberOfProcesses, processes max, processes alloc, fak
     int need[numberOfProcesses][numberOfResources];
     for (i = 0; i < numberOfProcesses; i++) {
         for (j = 0; j < numberOfResources; j++)
-            need[i][j] = returnResourceValue(j,max.resources[i]) - returnResourceValue(j, alloc.resources[i]);
+            need[i][j] = returnResourceValue(j, max.resources[i]) - returnResourceValue(j, alloc.resources[i]);
     }
     int y = 0;
     for (k = 0; k < 5; k++) {
@@ -57,7 +88,7 @@ int* CheckForDeadlock(int numberOfProcesses, processes max, processes alloc, fak
 
                 int flag = 0;
                 for (j = 0; j < numberOfResources; j++) {
-                    if (need[i][j] > returnResourceValue(j,avail)) {
+                    if (need[i][j] > returnResourceValue(j, availcp)) {
                         flag = 1;
                         break;
                     }
@@ -66,12 +97,14 @@ int* CheckForDeadlock(int numberOfProcesses, processes max, processes alloc, fak
                 if (flag == 0) {
                     ans[ind++] = i;
                     for (y = 0; y < numberOfResources; y++)
-                        modifyResources(y, &avail, returnResourceValue(y, alloc.resources[i]));
+                        modifyResources(y, &availcp, returnResourceValue(y, alloc.resources[i]));
                     flagArr[i] = 1;
                 }
             }
         }
     }
+
+
 
     int flag = 1;
 
@@ -89,8 +122,6 @@ int* CheckForDeadlock(int numberOfProcesses, processes max, processes alloc, fak
         finalOutput[0] = -1;
         finalOutput[1] = flag;
     }
-
-    RemoveSmallestAllocated(numberOfProcesses, finalOutput[0], max, alloc, avail);
 
     return finalOutput;
 }
