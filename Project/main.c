@@ -18,6 +18,20 @@
 #include "oslabs.h"
 #include "Solution/Process_Deadlock.c"
 
+void* callRemoveTests(int* output, int numberOfProcesses, int deadlockedProcess, processes max, processes alloc, fake_resources avail) {
+    printf("\n Call to Remove Smallest Allocated - Removed process: %d", RemoveSmallestAllocated(numberOfProcesses, deadlockedProcess, &max, &alloc, &avail));
+
+    output = CheckForDeadlock(numberOfProcesses-1, max, alloc, avail);
+
+    printf(" Process Causing Deadlock: %d Deadlock?: %d ", output[0], output[1]);
+
+    printf("\n Call to Remove Largest Allocated - Removed process: %d", RemoveLargestAllocated(numberOfProcesses, deadlockedProcess, &max, &alloc, &avail));
+
+    output = CheckForDeadlock(numberOfProcesses-1, max, alloc, avail);
+
+    printf(" Process Causing Deadlock: %d Deadlock?: %d ", output[0], output[1]);
+}
+
 int main(int argc, char** argv) {
     if (argc < 2) {
         fprintf(stderr, "Error: Insufficient arguments.\n");
@@ -35,12 +49,9 @@ int main(int argc, char** argv) {
 
         printf(" Process Causing Deadlock: %d Deadlock?: %d ", output[0], output[1]);
 
-        if (output[0] > -1)
-        printf("Removed process: %d",RemoveSmallestAllocated(5, output[0], &max, &alloc, &avail));
-
-        output = CheckForDeadlock(4, max, alloc, avail);
-
-        printf(" Process Causing Deadlock: %d Deadlock?: %d ", output[0], output[1]);
+        if (output[1] == 0) {
+            callRemoveTests(output, 5, output[0], max, alloc, avail);
+        }
         
     }
     if (arg == 1) {
@@ -53,12 +64,8 @@ int main(int argc, char** argv) {
 
         printf(" Process Causing Deadlock: %d Deadlock?: %d ", output[0], output[1]);
 
-        if (output[0] > -1) {
-            printf("Removed process: %d", RemoveSmallestAllocated(5, output[0], &max, &alloc, &avail));
-
-            output = CheckForDeadlock(4, max, alloc, avail);
-
-            printf(" Process Causing Deadlock: %d Deadlock?: %d ", output[0], output[1]);
+        if (output[1] == 0) {
+            callRemoveTests(output, 5, output[0], max, alloc, avail);
         }
     }
     /*if (arg == 2) {
@@ -71,12 +78,8 @@ int main(int argc, char** argv) {
 
         printf("Process Causing Deadlock: %d Deadlock?: %d ", output[0], output[1]);
 
-        if (output[0] > -1) {
-            printf("Removed process: %d", RemoveSmallestAllocated(4, output[0], &max, &alloc, &avail));
-
-            output = CheckForDeadlock(3, max, alloc, avail);
-
-            printf(" Process Causing Deadlock: %d Deadlock?: %d ", output[0], output[1]);
+        if (output[1] == 0) {
+            callRemoveTests(output, 5, output[0], max, alloc, avail);
         }
     }*/
     if (arg == 3) {
@@ -89,12 +92,8 @@ int main(int argc, char** argv) {
 
         printf("Process Causing Deadlock: %d Deadlock?: %d", output[0], output[1]);
 
-        if (output[0] > -1) {
-            printf("Removed process: %d", RemoveSmallestAllocated(3, output[0], &max, &alloc, &avail));
-
-            output = CheckForDeadlock(2, max, alloc, avail);
-
-            printf(" Process Causing Deadlock: %d Deadlock?: %d ", output[0], output[1]);
+        if (output[1] == 0) {
+            callRemoveTests(output, 5, output[0], max, alloc, avail);
         }
     }
     if (arg == 4) {
@@ -107,12 +106,8 @@ int main(int argc, char** argv) {
 
         printf("Process Causing Deadlock: %d Deadlock?: %d", output[0], output[1]);
 
-        if (output[0] > -1) {
-            printf("Removed process: %d", RemoveSmallestAllocated(7, output[0], &max, &alloc, &avail));
-
-            output = CheckForDeadlock(6, max, alloc, avail);
-
-            printf(" Process Causing Deadlock: %d Deadlock?: %d ", output[0], output[1]);
+        if (output[1] == 0) {
+            callRemoveTests(output, 5, output[0], max, alloc, avail);
         }
     }
     

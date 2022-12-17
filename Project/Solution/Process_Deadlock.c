@@ -49,6 +49,45 @@ int RemoveSmallestAllocated(int numberOfProcesses, int deadlockedProcess, proces
     return pToRemove;
 }
 
+/*
+* Remove largest Allocated
+*   This function finds, and removes the process with the smallest allocation total of resources based off its max resources needed that can satisfy the process that deadlocks
+*   Returns which process was removed
+*/
+int RemoveLargestAllocated(int numberOfProcesses, int deadlockedProcess, processes* max, processes* alloc, fake_resources* avail) {
+
+    fake_resources need = { ((*max).resources[deadlockedProcess].RAM - (*alloc).resources[deadlockedProcess].RAM), ((*max).resources[deadlockedProcess].NET - (*alloc).resources[deadlockedProcess].NET), ((*max).resources[deadlockedProcess].DISK - (*alloc).resources[deadlockedProcess].DISK) };
+    int pToRemove;
+    int largestResourceTotal = 0;
+    for (int i = 0; i < numberOfProcesses; i++) {
+        if (i == deadlockedProcess)continue;
+        if (((*alloc).resources[i].RAM + (*avail).RAM >= need.RAM) && ((*alloc).resources[i].NET + (*avail).NET >= need.NET) && ((*alloc).resources[i].DISK + (*avail).DISK >= need.DISK)) {
+            int resourceTotal = (*max).resources[i].RAM + (*max).resources[i].NET + (*max).resources[i].DISK;
+            if (resourceTotal > largestResourceTotal) {
+                largestResourceTotal = resourceTotal;
+                pToRemove = i;
+            }
+        }
+    }
+
+    int j = 0;
+
+    for (int i = 0; i < numberOfProcesses; i++) {
+        if (i == pToRemove) {
+            (*avail).RAM += (*alloc).resources[i].RAM;
+            (*avail).NET += (*alloc).resources[i].NET;
+            (*avail).DISK += (*alloc).resources[i].DISK;
+            continue;
+        }
+        (*max).resources[j] = (*max).resources[i];
+        (*alloc).resources[j++] = (*alloc).resources[i];
+    }
+
+    numberOfProcesses--;
+
+    return pToRemove;
+}
+
 
 /*
 * Check for deadlock
