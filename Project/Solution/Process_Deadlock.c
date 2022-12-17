@@ -64,8 +64,8 @@ int* CheckForDeadlock(int numberOfProcesses, processes max, processes alloc, fak
 
     fake_resources availcp;
     availcp.RAM = avail.RAM;
-    availcp.DISK = avail.DISK;
     availcp.NET = avail.NET;
+    availcp.DISK = avail.DISK;
 
     int i, j, k;
 
@@ -82,7 +82,7 @@ int* CheckForDeadlock(int numberOfProcesses, processes max, processes alloc, fak
             need[i][j] = returnResourceValue(j, max.resources[i]) - returnResourceValue(j, alloc.resources[i]);
     }
     int y = 0;
-    for (k = 0; k < 5; k++) {
+    for (k = 0; k < numberOfProcesses; k++) {
         for (i = 0; i < numberOfProcesses; i++) {
             if (flagArr[i] == 0) {
 
@@ -90,14 +90,10 @@ int* CheckForDeadlock(int numberOfProcesses, processes max, processes alloc, fak
                 for (j = 0; j < numberOfResources; j++) {
                     if (need[i][j] > returnResourceValue(j, availcp)) {
                         flag = 1;
-                        break;
                     }
                 }
-
                 if (flag == 0) {
-                    ans[ind++] = i;
-                    for (y = 0; y < numberOfResources; y++)
-                        modifyResources(y, &availcp, returnResourceValue(y, alloc.resources[i]));
+                    for (y = 0; y < numberOfResources; y++)modifyResources(y, &availcp, returnResourceValue(y, alloc.resources[i]));
                     flagArr[i] = 1;
                 }
             }
@@ -115,6 +111,7 @@ int* CheckForDeadlock(int numberOfProcesses, processes max, processes alloc, fak
             flag = 0;
             finalOutput[0] = i;
             finalOutput[1] = flag;
+            break;
         }
     }
 
