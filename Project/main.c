@@ -30,6 +30,21 @@ void* runRemoval(int numberOfProcesses, int* output, processes max, processes al
     printf("\n   Largest process to remove: %d", largestRemove);
 }
 
+int correctlyFoundDeadlock(int* expectedOutput, int* receivedOutput) {
+    int error = 0; //0 for passing 
+
+    if (expectedOutput[1] != receivedOutput[1])error = 1;
+    if (error && expectedOutput[1] == 0)printf("Deadlock detection function gave: %d which means no deadlock was found\nCorrect output should be %d which means deadlock was found\n", receivedOutput[1], expectedOutput[1]);
+    else if (error && expectedOutput[1] == 1)printf("Deadlock detection function gave: %d which means deadlock was found\nCorrect output should be %d which means deadlock was not found\n", receivedOutput[1], expectedOutput[1]);
+    else printf("Deadlock detection function correctly figured out if deadlock occured\n");
+
+    if (expectedOutput[0] != receivedOutput[0])error = 2;
+    if (error > 1 && expectedOutput[0] > -1)printf("Deadlock detection function claims deadlock occured with process: %d\nScenario deadlocks from process: %d\n", receivedOutput[0], expectedOutput[0]);
+    else printf("Deadlock detection function correctly found what process causes deadlock\n");
+
+    return error;
+}
+
 int main(int argc, char** argv) {
     if (argc < 2) {
         fprintf(stderr, "Error: Insufficient arguments.\n");
@@ -46,7 +61,7 @@ int main(int argc, char** argv) {
         fake_resources allocResources[5] =  {{1,0,1}, {2,2,0}, {3,3,2}, {0,0,1}, {5,0,3}};
         processes alloc = { allocResources };
         fake_resources avail = {2, 1, 0};
-        int* output = CheckForDeadlock(5, max, alloc, avail);
+        int* output = CheckForDeadlock(numberOfProcesses, max, alloc, avail);
 
         printf(" Process Causing Deadlock: %d Deadlock?: %d ", output[deadlocked], output[flag]);
 
