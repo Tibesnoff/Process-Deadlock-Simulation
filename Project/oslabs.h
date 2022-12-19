@@ -7,6 +7,8 @@
 */
 
 #define numberOfResources 3
+#define bufferspace 2
+
 
 typedef struct {
 	int RAM;
@@ -21,7 +23,5 @@ typedef struct {
 void* modifyResources(int resource, fake_resources* p, int val);
 int returnResourceValue(int resource, fake_resources p);
 int* CheckForDeadlock(int numberOfProcesses, processes max, processes alloc, fake_resources avail);
-int RemoveSmallestAllocated(int numberOfProcesses, int deadlockedProcess, processes* max, processes* alloc, fake_resources* avail);
-int RemoveLargestAllocated(int numberOfProcesses, int deadlockedProcess, processes* max, processes* alloc, fake_resources* avail);
-
-
+int RemoveSmallestAllocated(int numberOfProcesses, int* deadlockedResult, processes max, processes alloc, fake_resources avail);
+int RemoveLargestAllocated(int numberOfProcesses, int* deadlockedResult, processes max, processes alloc, fake_resources avail);
