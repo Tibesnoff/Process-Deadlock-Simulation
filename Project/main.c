@@ -17,7 +17,7 @@ int correctlyRemovedLargest(int largestExpected, int largestReceived);
 int numberOfProcesses;
 int smallestExpected = -1;
 int largestExpected = -1;
-int error = 0;
+int error = 0; //Zero means the scenaro passed; Any other number means it failed somewhere
 
 
 int callRemovalFunctions(int smallestExpected, int largestExpected, int numberOfProcesses, int* output, processes max, processes alloc, fake_resources avail) {
@@ -64,7 +64,7 @@ int correctlyRemovedLargest(int largestExpected, int largestReceived) {
 
 
 int correctlyFoundDeadlock(int* expectedOutput, int* receivedOutput) {
-    int error = 0; //0 for passing 
+    int error = 0;
 
     if (expectedOutput[1] != receivedOutput[1])error = 1;
     if (error && expectedOutput[1] == 0)printf("\n\nDeadlock detection function gave: %d which means no deadlock was found\nCorrect output should be %d which means deadlock was found\n", receivedOutput[1], expectedOutput[1]);
