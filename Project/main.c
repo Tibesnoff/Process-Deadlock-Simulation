@@ -21,7 +21,7 @@ int error = 0; //Zero means the scenaro passed; Any other number means it failed
 
 
 int callRemovalFunctions(int smallestExpected, int largestExpected, int numberOfProcesses, int* output, processes max, processes alloc, fake_resources avail) {
-    int error = 0;
+    error = 0;
 
     int smallestRemove = RemoveSmallestAllocated(numberOfProcesses, output, max, alloc, avail);
     int smallestRemoveExpected = smallestExpected;
@@ -39,7 +39,7 @@ int callRemovalFunctions(int smallestExpected, int largestExpected, int numberOf
 }
 
 int correctlyRemovedSmallest(int smallestExpected, int smallestReceived) {
-    int error = 0; 
+    error = 0; 
 
     if (smallestExpected == smallestReceived)printf("\nYou have correctly removed the smallest process\n");
     else {
@@ -64,7 +64,7 @@ int correctlyRemovedLargest(int largestExpected, int largestReceived) {
 
 
 int correctlyFoundDeadlock(int* expectedOutput, int* receivedOutput) {
-    int error = 0;
+    error = 0;
 
     if (expectedOutput[1] != receivedOutput[1])error = 1;
     if (error && expectedOutput[1] == 0)printf("\n\nDeadlock detection function gave: %d which means no deadlock was found\nCorrect output should be %d which means deadlock was found\n", receivedOutput[1], expectedOutput[1]);
@@ -88,7 +88,7 @@ int correctlyFoundDeadlock(int* expectedOutput, int* receivedOutput) {
 }
 
 int testFunctions(int* output, int* outputExpected, int smallestExpected, int largestExpected, int numberOfProcesses, processes max, processes alloc, fake_resources avail) {
-    int error = 0;
+    error = 0;
     
     printf("\n*********************************************");
     printf("\n*%-1sProcess Causing Deadlock:%2d Deadlock?: %-3d*", "", output[deadlocked], output[flag]);
