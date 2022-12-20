@@ -20,7 +20,7 @@ int largestExpected = -1;
 int error = 0;
 
 
-int runRemoval(int smallestExpected, int largestExpected, int numberOfProcesses, int* output, processes max, processes alloc, fake_resources avail) {
+int callRemovalFunctions(int smallestExpected, int largestExpected, int numberOfProcesses, int* output, processes max, processes alloc, fake_resources avail) {
     int error = 0;
 
     int smallestRemove = RemoveSmallestAllocated(numberOfProcesses, output, max, alloc, avail);
@@ -87,7 +87,29 @@ int correctlyFoundDeadlock(int* expectedOutput, int* receivedOutput) {
     return error;
 }
 
-void* restTestData() {
+int testFunctions(int* output, int* outputExpected, int smallestExpected, int largestExpected, int numberOfProcesses, processes max, processes alloc, fake_resources avail) {
+    int error = 0;
+    
+    printf("\n*********************************************");
+    printf("\n*%-1sProcess Causing Deadlock:%2d Deadlock?: %-3d*", "", output[deadlocked], output[flag]);
+
+    for (int i = 0; i < numberOfProcesses; i++) {
+        printf("\n*%-3sProcess %d Result: %-22d*", "", i, output[(i + bufferspace)]);
+    }
+
+    printf("\n*********************************************");
+
+    error = correctlyFoundDeadlock(outputExpected, output);
+
+    if (output[flag] == 0) {
+        if (error == 0)error = callRemovalFunctions(smallestExpected, largestExpected, numberOfProcesses, output, max, alloc, avail);
+        else callRemovalFunctions(smallestExpected, largestExpected, numberOfProcesses, output, max, alloc, avail);
+    }
+
+    return error;
+}
+
+void* resetTestData() {
     smallestExpected = -1;
     largestExpected = -1;
     error = 0;
@@ -101,7 +123,7 @@ int main(int argc, char** argv) {
     int arg = atoi(argv[1]);
 
     if (arg == 0) {
-        restTestData();
+        resetTestData();
 
         numberOfProcesses = 5;
         smallestExpected = 4;
@@ -116,7 +138,7 @@ int main(int argc, char** argv) {
         int* output = CheckForDeadlock(numberOfProcesses, max, alloc, avail);
         int* outputExpected = NULL;
         outputExpected = malloc((numberOfProcesses + bufferspace) * sizeof(int));
-        outputExpected[0] = 1;
+        outputExpected[0] = 0;
         outputExpected[1] = 0;
         outputExpected[2] = 0;
         outputExpected[3] = 0;
@@ -125,27 +147,10 @@ int main(int argc, char** argv) {
         outputExpected[6] = 0;
         outputExpected[7] = 0;
 
-        printf("\n*********************************************");
-        printf("\n*%-1sProcess Causing Deadlock:%2d Deadlock?: %-3d*", "", output[deadlocked], output[flag]);
-
-        for (int i = 0; i < numberOfProcesses; i++) {
-            printf("\n*%-3sProcess %d Result: %-22d*", "", i, output[(i + bufferspace)]);
-        }
-
-        printf("\n*********************************************");
-
-        error = correctlyFoundDeadlock(outputExpected, output);
-        
-        if (output[flag] == 0) {
-            if(error==0)error = runRemoval(smallestExpected, largestExpected, numberOfProcesses, output, max, alloc, avail);
-            else runRemoval(smallestExpected, largestExpected, numberOfProcesses, output, max, alloc, avail);
-        }
-
-        if (error == 0)printf("\nPassed test 1");
-        
+        if (testFunctions(output, outputExpected, smallestExpected, largestExpected, numberOfProcesses, max, alloc, avail)==0)printf("\nPassed test 1\n");
     }
     if (arg == 1) {
-        restTestData();
+        resetTestData();
 
         numberOfProcesses = 5;
         smallestExpected = 4;
@@ -168,26 +173,10 @@ int main(int argc, char** argv) {
         outputExpected[6] = 1;
         outputExpected[7] = 1;
 
-        printf("\n*********************************************");
-        printf("\n*%-1sProcess Causing Deadlock:%2d Deadlock?: %-3d*", "", output[deadlocked], output[flag]);
-
-        for (int i = 0; i < numberOfProcesses; i++) {
-            printf("\n*%-3sProcess %d Result: %-22d*", "", i, output[(i + bufferspace)]);
-        }
-
-        printf("\n*********************************************");
-
-        error = correctlyFoundDeadlock(outputExpected, output);
-
-        if (output[flag] == 0) {
-            if (error == 0)error = runRemoval(smallestExpected, largestExpected, numberOfProcesses, output, max, alloc, avail);
-            else runRemoval(smallestExpected, largestExpected, numberOfProcesses, output, max, alloc, avail);
-        }
-
-        if (error == 0)printf("\nPassed test 2");
+        if (testFunctions(output, outputExpected, smallestExpected, largestExpected, numberOfProcesses, max, alloc, avail) == 0)printf("\nPassed test 2\n");
     }
     if (arg == 2) {
-        restTestData();
+        resetTestData();
 
         numberOfProcesses = 3;
         smallestExpected = -1;
@@ -207,26 +196,10 @@ int main(int argc, char** argv) {
         outputExpected[3] = 1;
         outputExpected[4] = 1;
 
-        printf("\n*********************************************");
-        printf("\n*%-1sProcess Causing Deadlock:%2d Deadlock?: %-3d*", "", output[deadlocked], output[flag]);
-
-        for (int i = 0; i < numberOfProcesses; i++) {
-            printf("\n*%-3sProcess %d Result: %-22d*", "", i, output[(i + bufferspace)]);
-        }
-
-        printf("\n*********************************************");
-
-        error = correctlyFoundDeadlock(outputExpected, output);
-
-        if (output[flag] == 0) {
-            if (error == 0)error = runRemoval(smallestExpected, largestExpected, numberOfProcesses, output, max, alloc, avail);
-            else runRemoval(smallestExpected, largestExpected, numberOfProcesses, output, max, alloc, avail);
-        }
-
-        if (error == 0)printf("\nPassed test 3");
+        if (testFunctions(output, outputExpected, smallestExpected, largestExpected, numberOfProcesses, max, alloc, avail) == 0)printf("\nPassed test 3\n");
     }
     if (arg == 3) {
-        restTestData();
+        resetTestData();
 
         numberOfProcesses = 7;
         smallestExpected = -1;
@@ -250,26 +223,10 @@ int main(int argc, char** argv) {
         outputExpected[7] = 1;
         outputExpected[8] = 1;
 
-        printf("\n*********************************************");
-        printf("\n*%-1sProcess Causing Deadlock:%2d Deadlock?: %-3d*", "", output[deadlocked], output[flag]);
-
-        for (int i = 0; i < numberOfProcesses; i++) {
-            printf("\n*%-3sProcess %d Result: %-22d*", "", i, output[(i + bufferspace)]);
-        }
-
-        printf("\n*********************************************");
-
-        error = correctlyFoundDeadlock(outputExpected, output);
-
-        if (output[flag] == 0) {
-            if (error == 0)error = runRemoval(smallestExpected, largestExpected, numberOfProcesses, output, max, alloc, avail);
-            else runRemoval(smallestExpected, largestExpected, numberOfProcesses, output, max, alloc, avail);
-        }
-
-        if (error == 0)printf("\nPassed test 4");
+        if (testFunctions(output, outputExpected, smallestExpected, largestExpected, numberOfProcesses, max, alloc, avail) == 0)printf("\nPassed test 4\n");
     }
     if (arg == 4) {
-        restTestData();
+        resetTestData();
 
         numberOfProcesses = 7;
         smallestExpected = -1;
@@ -293,25 +250,10 @@ int main(int argc, char** argv) {
         outputExpected[7] = 1;
         outputExpected[8] = 0;
 
-        printf("\n*********************************************");
-        printf("\n*%-1sProcess Causing Deadlock:%2d Deadlock?: %-3d*", "", output[deadlocked], output[flag]);
-
-        for (int i = 0; i < numberOfProcesses; i++) {
-            printf("\n*%-3sProcess %d Result: %-22d*", "", i, output[(i + bufferspace)]);
-        }
-
-        printf("\n*********************************************");
-
-        error = correctlyFoundDeadlock(outputExpected, output);
-
-        if (output[flag] == 0) {
-            error = runRemoval(smallestExpected, largestExpected, numberOfProcesses, output, max, alloc, avail);
-        }
-
-        if (error == 0)printf("\nPassed test 5");
+        if (testFunctions(output, outputExpected, smallestExpected, largestExpected, numberOfProcesses, max, alloc, avail) == 0)printf("\nPassed test 5\n");
     }
     if (arg == 5) {
-        restTestData();
+        resetTestData();
 
         numberOfProcesses = 6;
         smallestExpected = 5;
@@ -334,23 +276,7 @@ int main(int argc, char** argv) {
         outputExpected[6] = 1;
         outputExpected[7] = 0;
 
-        printf("\n*********************************************");
-        printf("\n*%-1sProcess Causing Deadlock:%2d Deadlock?: %-3d*", "", output[deadlocked], output[flag]);
-
-        for (int i = 0; i < numberOfProcesses; i++) {
-            printf("\n*%-3sProcess %d Result: %-22d*","", i, output[(i + bufferspace)]);
-        }
-
-        printf("\n*********************************************");
-
-        error = correctlyFoundDeadlock(outputExpected, output);
-
-        if (output[flag] == 0) {
-            if (error == 0)error = runRemoval(smallestExpected, largestExpected, numberOfProcesses, output, max, alloc, avail);
-            else runRemoval(smallestExpected, largestExpected, numberOfProcesses, output, max, alloc, avail);
-        }
-
-        if (error == 0)printf("\nPassed test 6");
+        if (testFunctions(output, outputExpected, smallestExpected, largestExpected, numberOfProcesses, max, alloc, avail) == 0)printf("\nPassed test 6\n");
     }
 
     return 0;

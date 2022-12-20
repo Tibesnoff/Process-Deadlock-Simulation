@@ -24,9 +24,7 @@ int RemoveSmallestAllocated(int numberOfProcesses, int* deadlockedResult, proces
     int smallestResourceTotal = 1000;
     for (int i = 0; i < numberOfProcesses; i++) {
         if (deadlockedResult[i + bufferspace] == 1) {
-            availcp.RAM += alloc.resources[i].RAM;
-            availcp.NET += alloc.resources[i].NET;
-            availcp.DISK += alloc.resources[i].DISK;
+            for (int j = 0; j < numberOfResources; j++)modifyResources(j, &availcp, returnResourceValue(j, alloc.resources[i]));
         }
     }
     for (int i = 0; i < numberOfProcesses; i++) {
@@ -61,9 +59,7 @@ int RemoveLargestAllocated(int numberOfProcesses, int* deadlockedResult, process
     int largestResourceTotal = 0;
     for (int i = 0; i < numberOfProcesses; i++) {
         if (deadlockedResult[i + bufferspace] == 1) {
-            availcp.RAM += alloc.resources[i].RAM;
-            availcp.NET += alloc.resources[i].NET;
-            availcp.DISK += alloc.resources[i].DISK;
+            for (int j = 0; j < numberOfResources; j++)modifyResources(j, &availcp, returnResourceValue(j, alloc.resources[i]));
         }
     }
     for (int i = 0; i < numberOfProcesses; i++) {
@@ -156,6 +152,15 @@ int* CheckForDeadlock(int numberOfProcesses, processes max, processes alloc, fak
     return finalOutput;
 }
 
+//Helper functions
+int returnResourceValue(int resource, fake_resources p) {
+    if (resource == 0)return p.RAM;
+    if (resource == 1)return p.NET;
+    return p.DISK;
+}
 
-
-
+void* modifyResources(int resource, fake_resources* p, int val) {
+    if (resource == 0)(*p).RAM += val;
+    if (resource == 1)(*p).NET += val;
+    (*p).DISK += val;
+}
