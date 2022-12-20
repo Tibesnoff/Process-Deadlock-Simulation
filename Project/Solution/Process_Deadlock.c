@@ -13,7 +13,7 @@
 *   This function finds, and removes the process with the smallest allocated total of resources that can satisfy the first process that causeses a deadlock
 *   Returns an int showing which process was removed starting with 0 and going to number of processes
 */
-int RemoveSmallestAllocated(int numberOfProcesses, int* deadlockedResult, processes max, processes alloc, fake_resources avail) {
+int removeSmallestAllocated(int numberOfProcesses, int* deadlockedResult, processes max, processes alloc, fake_resources avail) {
     fake_resources availcp;
     availcp.RAM = avail.RAM;
     availcp.NET = avail.NET;
@@ -48,7 +48,7 @@ int RemoveSmallestAllocated(int numberOfProcesses, int* deadlockedResult, proces
 *   This function finds, and removes the process with the largest allocated total of resources that can satisfy the first process that causeses a deadlock
 *   Returns an int showing which process was removed starting with 0 and going to number of processes
 */
-int RemoveLargestAllocated(int numberOfProcesses, int* deadlockedResult, processes max, processes alloc, fake_resources avail) {
+int removeLargestAllocated(int numberOfProcesses, int* deadlockedResult, processes max, processes alloc, fake_resources avail) {
     fake_resources availcp;
     availcp.RAM = avail.RAM;
     availcp.NET = avail.NET;
@@ -87,7 +87,7 @@ int RemoveLargestAllocated(int numberOfProcesses, int* deadlockedResult, process
 *       *Make sure avail array is copied and use the copy in this algorithm
 * 
 */
-int* CheckForDeadlock(int numberOfProcesses, processes max, processes alloc, fake_resources avail) {
+int* checkForDeadlock(int numberOfProcesses, processes max, processes alloc, fake_resources avail) {
 
     fake_resources availcp;
     availcp.RAM = avail.RAM;
