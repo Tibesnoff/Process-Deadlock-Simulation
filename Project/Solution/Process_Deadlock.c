@@ -3,8 +3,6 @@
 *	Tyler Besnoff
 *	Lucas Lecler
 *	2022
-*
-*
 */
 
 #include <stdio.h>
@@ -13,7 +11,7 @@
 /*
 * Remove Smallest Allocated
 *   This function finds, and removes the process with the smallest allocated total of resources that can satisfy the first process that causeses a deadlock
-*   Returns which process was removed
+*   Returns an int showing which process was removed starting with 0 and going to number of processes
 */
 int RemoveSmallestAllocated(int numberOfProcesses, int* deadlockedResult, processes max, processes alloc, fake_resources avail) {
     fake_resources availcp;
@@ -26,9 +24,7 @@ int RemoveSmallestAllocated(int numberOfProcesses, int* deadlockedResult, proces
     int smallestResourceTotal = 1000;
     for (int i = 0; i < numberOfProcesses; i++) {
         if (deadlockedResult[i + bufferspace] == 1) {
-            availcp.RAM += alloc.resources[i].RAM;
-            availcp.NET += alloc.resources[i].NET;
-            availcp.DISK += alloc.resources[i].DISK;
+            for (int j = 0; j < numberOfResources; j++)modifyResources(j, &availcp, returnResourceValue(j, alloc.resources[i]));
         }
     }
     for (int i = 0; i < numberOfProcesses; i++) {
@@ -49,8 +45,8 @@ int RemoveSmallestAllocated(int numberOfProcesses, int* deadlockedResult, proces
 
 /*
 * Remove largest Allocated
-*   This function finds, and removes the process with the smallest allocation total of resources based off its max resources needed that can satisfy the process that deadlocks
-*   Returns which process was removed
+*   This function finds, and removes the process with the largest allocated total of resources that can satisfy the first process that causeses a deadlock
+*   Returns an int showing which process was removed starting with 0 and going to number of processes
 */
 int RemoveLargestAllocated(int numberOfProcesses, int* deadlockedResult, processes max, processes alloc, fake_resources avail) {
     fake_resources availcp;
@@ -63,9 +59,7 @@ int RemoveLargestAllocated(int numberOfProcesses, int* deadlockedResult, process
     int largestResourceTotal = 0;
     for (int i = 0; i < numberOfProcesses; i++) {
         if (deadlockedResult[i + bufferspace] == 1) {
-            availcp.RAM += alloc.resources[i].RAM;
-            availcp.NET += alloc.resources[i].NET;
-            availcp.DISK += alloc.resources[i].DISK;
+            for (int j = 0; j < numberOfResources; j++)modifyResources(j, &availcp, returnResourceValue(j, alloc.resources[i]));
         }
     }
     for (int i = 0; i < numberOfProcesses; i++) {
@@ -86,7 +80,7 @@ int RemoveLargestAllocated(int numberOfProcesses, int* deadlockedResult, process
 /*
 * Check for deadlock
 *   This function is to check if a given scenario runs into deadlock
-*   Function will return a int* of two ints where the first int is the process that causes deadlock and the second int is the flag
+*   Function will return a int* with length bufferspace + numberOfProcesses where the first int is the process that causes deadlock, the second int being the deadlock flag and the remaining ints corresponding to 1 if the corresponding process can complete and 0 if it can't
 *       *Process causing deadlock will start at 0 for the first process
 *       *Process causing deadlock will show as -1 if the flag is showing no deadlock
 *       *Flag will be set to 0 for deadlock and 1 for no deadlock
@@ -155,9 +149,10 @@ int* CheckForDeadlock(int numberOfProcesses, processes max, processes alloc, fak
         finalOutput[1] = flag;
     }
 
-    return finalOutput; // finalOutput [0==deadlocked, 1==flag, flagArr[]]
+    return finalOutput;
 }
 
+//Helper functions
 int returnResourceValue(int resource, fake_resources p) {
     if (resource == 0)return p.RAM;
     if (resource == 1)return p.NET;
@@ -169,6 +164,3 @@ void* modifyResources(int resource, fake_resources* p, int val) {
     if (resource == 1)(*p).NET += val;
     (*p).DISK += val;
 }
-
-
-
