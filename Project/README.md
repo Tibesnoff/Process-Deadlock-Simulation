@@ -9,11 +9,11 @@ so that main runs correctly without deadlock.
 
 Functions student needs to complete
 
-void* modifyResources(int resource, fake_resources* p, int val);
-int returnResourceValue(int resource, fake_resources p);
-int* checkForDeadlock(int numberOfProcesses, processes max, processes alloc, fake_resources avail);
-int removeSmallestAllocated(int numberOfProcesses, int* deadlockedResult, processes max, processes alloc, fake_resources avail);
-int removeLargestAllocated(int numberOfProcesses, int* deadlockedResult, processes max, processes alloc, fake_resources avail);
+* void* modifyResources(int resource, fake_resources* p, int val);
+* int returnResourceValue(int resource, fake_resources p);
+* int* checkForDeadlock(int numberOfProcesses, processes max, processes alloc, fake_resources avail);
+* int removeSmallestAllocated(int numberOfProcesses, int* deadlockedResult, processes max, processes alloc, fake_resources avail);
+* int removeLargestAllocated(int numberOfProcesses, int* deadlockedResult, processes max, processes alloc, fake_resources avail);
 
 modifyResources: Modifies a resource of a given process
 
